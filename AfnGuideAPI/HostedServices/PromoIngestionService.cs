@@ -48,7 +48,6 @@ namespace AfnGuideAPI.HostedServices
         {
             // Download promotions from AFN
             using var client = GetNewHttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36");
             var response = await client
                 .GetAsync("https://myafn.dodmedia.osd.mil/default.aspx", stoppingToken);
             var html = await response.Content.ReadAsStringAsync(stoppingToken);

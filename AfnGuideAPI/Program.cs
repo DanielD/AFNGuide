@@ -21,6 +21,7 @@ builder.Services.InitializeDatabase();
 
 builder.Services.AddHostedService<RssIngestionService>();
 builder.Services.AddHostedService<PromoIngestionService>();
+builder.Services.AddHostedService<BulletinIngestionService>();
 
 builder.Services.AddSingleton<IBackgroundTaskQueue>(_ => new DefaultBackgroundTaskQueue(1000));
 builder.Services.AddHostedService<QueuedHostedService>();

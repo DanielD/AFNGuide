@@ -128,8 +128,8 @@ namespace AfnGuideAPI.HostedServices
             try
             {
                 // Check if schedule already exists in database
-                var existingSchedule = await _dbContext.Schedules.FirstOrDefaultAsync(s 
-                    => s.AfnId == schedule.AfnId);
+                var existingSchedule = await _dbContext.Schedules
+                    .FirstOrDefaultAsync(s => s.AfnId == schedule.AfnId);
                 // If schedule exists, update it
                 if (existingSchedule != null)
                 {
