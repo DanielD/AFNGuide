@@ -32,14 +32,14 @@ namespace AfnGuideAPI.HostedServices
 
         private async Task IngestBulletins(CancellationToken stoppingToken)
         {
-            // Disable all bulletins in the database
-            await DisableOldBulletins();
             // Download text file from website
             using var client = GetNewHttpClient();
             var response = await client
                 .GetAsync($"https://myafn.dodmedia.osd.mil/json/bulletins.json?_={DateTime.UtcNow.Ticks}", stoppingToken);
             var html = await response.Content.ReadAsStringAsync(stoppingToken);
             html = CleanHtml(html);
+            // Disable all bulletins in the database
+            await DisableOldBulletins();
             // Parse text file into JSON
             var bulletins = JsonConvert.DeserializeObject<List<Bulletin>>(html);
             // Loop through JSON into bulletins
