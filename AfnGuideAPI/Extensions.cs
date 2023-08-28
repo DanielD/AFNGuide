@@ -94,7 +94,8 @@ namespace AfnGuideAPI
             return schedules
                 .Include(s => s.Channel)
                 .Where(s 
-                    => s.Title!.ToLower().Replace(" ", "") == title.ToLower())
+                    => s.Title!.ToLower().Replace(" ", "") == title.ToLower()
+                    && s.AirDateUTC >= DateTime.UtcNow)
                 .ToListAsync(cancellationToken);
         }
 
@@ -104,7 +105,8 @@ namespace AfnGuideAPI
             return schedules
                 .Include(s => s.Channel)
                 .Where(s
-                    => s.Title!.ToLower().Replace(" ", "") == title.Replace('G', '&').ToLower())
+                    => s.Title!.ToLower().Replace(" ", "") == title.Replace('G', '&').ToLower()
+                    && s.AirDateUTC >= DateTime.UtcNow)
                 .ToListAsync(cancellationToken);
         }
 

@@ -18,6 +18,11 @@ namespace AfnGuideAPI.HostedServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation($"{nameof(PromoIngestionService)} is starting.");
+
+            // Delay 2 minutes to allow the database to be created if necessary
+            await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
+
             // Repeat every 1 hour
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -42,6 +47,13 @@ namespace AfnGuideAPI.HostedServices
                 }
 #endif
             }
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"{nameof(PromoIngestionService)} is stopping.");
+
+            await base.StopAsync(cancellationToken);
         }
 
         private async Task IngestPromos(CancellationToken stoppingToken)
@@ -110,7 +122,9 @@ namespace AfnGuideAPI.HostedServices
             {
                 // Check if anchor matches a valid Schedule title
                 var schedule = await _dbContext.Schedules
-                    .Where(s => s.Title!.ToLower().Replace(" ", "") == anchor.ToLower())
+                    .Where(s 
+                        => s.Title!.ToLower().Replace(" ", "") == anchor.ToLower()
+                        && s.AirDateUTC >= DateTime.UtcNow)
                     .FirstOrDefaultAsync();
 
                 return schedule?.AfnId;
@@ -129,7 +143,7 @@ namespace AfnGuideAPI.HostedServices
                 // If promo exists, update it
                 if (existingPromo != null)
                 {
-                    existingPromo.AfnId = promo.AfnId;
+                    existingPromo.AfnId ??= promo.AfnId;
                     existingPromo.Duration = promo.Duration;
                     existingPromo.Image = promo.Image;
                     existingPromo.Url = promo.Url;

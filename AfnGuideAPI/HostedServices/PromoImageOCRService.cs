@@ -34,7 +34,7 @@ namespace AfnGuideAPI.HostedServices
             {
                 // Get all promos where IsActive = true and AfnId is null
                 var promos = await _dbContext.Promos
-                    .Where(p => p.IsActive && p.AfnId == null && p.Image != null)
+                    .Where(p => p.IsActive && p.Image != null)
                     .ToListAsync(cancellationToken: stoppingToken);
                 // For each promo, add a task to the queue
                 foreach (var promo in promos)
@@ -73,7 +73,6 @@ namespace AfnGuideAPI.HostedServices
                 string title = string.Empty;
                 foreach (var line in lines)
                 {
-                    bool hasG = false;
                     title += line.Trim() + " ";
                     query += line;
                     query = query.Trim().RemoveWhiteSpace();
@@ -82,19 +81,11 @@ namespace AfnGuideAPI.HostedServices
                     if (!schedules.Any())
                     {
                         schedules = await _dbContext.Schedules.FindByTitleGAsync(query, stoppingToken);
-                        hasG = true;
                     }
                     if (schedules.Any())
                     {
                         promo.AfnId = schedules.First().AfnId;
-                        if (hasG)
-                        {
-                            promo.Title = title.Replace("G", " & ").Trim().RemoveWhiteSpace(" "); //.ToTitleCase();
-                        }
-                        else
-                        {
-                            promo.Title = title.Trim().RemoveWhiteSpace(" "); //.ToTitleCase();
-                        }
+                        promo.Title = schedules.First().Title;
                         await _dbContext.SaveChangesAsync(stoppingToken);
                         _logger.LogInformation($"Promo {promo.Id} matched to schedule {schedules.First().Id}");
                         return;
