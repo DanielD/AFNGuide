@@ -31,6 +31,7 @@ namespace AfnGuideAPI.HostedServices
             {
                 if (!IsPromoCompleted)
                 {
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                     continue;
                 }
 

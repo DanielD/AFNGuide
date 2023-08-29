@@ -20,6 +20,29 @@ namespace AfnGuideAPI.Controllers
             _logger = _loggerFactory.CreateLogger<PromosController>();
         }
 
+        [HttpGet("image/{id}")]
+        [ProducesResponseType(typeof(FileContentResult), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetPromoImage(string id)
+        {
+            try
+            {
+                var promo = await _dbContext.Promos.FindAsync(id);
+                if (promo == null || promo.ImageData == null || promo.ImageData.Length == 0)
+                {
+                    return NotFound();
+                }
+
+                return File(promo.ImageData, "image/jpeg");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving promo image");
+                return StatusCode(500);
+            }
+        }
+
         [HttpGet("{timeZoneId:int}")]
         [ProducesResponseType(typeof(List<ViewModels.Promo>), 200)]
         [ProducesResponseType(404)]
@@ -75,7 +98,7 @@ namespace AfnGuideAPI.Controllers
                                 Title = schedule?.Title ?? promo.Title,
                                 Description = schedule?.Description,
                                 IsPromoB = promo.IsPromoB,
-                                ImageUrl = promo.Image,
+                                ImageUrl = $"/api/promos/image/{promo.Id}",
                                 LinkUrl = promo.Url,
                                 Schedules = new PromoSchedules(schedules.Select(s
                                     => new PromoSchedule

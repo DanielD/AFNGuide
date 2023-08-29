@@ -25,6 +25,7 @@ namespace AfnGuideAPI.HostedServices
             {
                 if (!IsRssCompleted)
                 {
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                     continue;
                 }
 
@@ -85,6 +86,7 @@ namespace AfnGuideAPI.HostedServices
                     Duration = int.Parse(m.Groups["duration"].Value),
                     Image = m.Groups["image"].Value,
                     Url = m.Groups.ContainsKey("url") ? m.Groups["url"].Value : null,
+                    ImageData = await DownloadImage(m.Groups["image"].Value),
                     CreatedOnUTC = DateTime.UtcNow
                 };
 
@@ -105,6 +107,7 @@ namespace AfnGuideAPI.HostedServices
                     AfnId = await AttemptToDetermineAfnId(m.Groups["url"].Value),
                     Image = m.Groups["image"].Value,
                     Url = m.Groups.ContainsKey("url") ? m.Groups["url"].Value : null,
+                    ImageData = await DownloadImage(m.Groups["image"].Value),
                     IsPromoB = true,
                     CreatedOnUTC = DateTime.UtcNow
                 };
@@ -114,6 +117,19 @@ namespace AfnGuideAPI.HostedServices
             }
 
             IsPromoCompleted = true;
+        }
+
+        private async Task<byte[]?> DownloadImage(string value)
+        {
+            using var client = GetNewHttpClient();
+            var response = await client.GetAsync(value);
+            if (response.IsSuccessStatusCode == false)
+            {
+                _logger.LogError($"Error downloading image from AFN. StatusCode: {response.StatusCode}");
+                return null;
+            }
+
+            return await response.Content.ReadAsByteArrayAsync();
         }
 
         private string ParseIdFromImage(string value)
@@ -157,6 +173,7 @@ namespace AfnGuideAPI.HostedServices
                     existingPromo.CreatedOnUTC = promo.CreatedOnUTC;
                     existingPromo.IsPromoB = promo.IsPromoB;
                     existingPromo.IsActive = promo.IsActive;
+                    existingPromo.ImageData = promo.ImageData;
                 }
                 else
                 {

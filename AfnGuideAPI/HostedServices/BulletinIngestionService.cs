@@ -21,6 +21,8 @@ namespace AfnGuideAPI.HostedServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+
             // Repeat every 24 hours
             while (!stoppingToken.IsCancellationRequested)
             {
