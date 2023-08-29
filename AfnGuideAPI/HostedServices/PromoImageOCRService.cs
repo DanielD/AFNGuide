@@ -4,7 +4,7 @@ using AfnGuideAPI.Services;
 
 namespace AfnGuideAPI.HostedServices
 {
-    public class PromoImageOCRService : BackgroundServiceBase
+    public class PromoImageOCRService : ConsecutiveBackgroundServiceBase
     {
         private readonly IBackgroundTaskQueue _taskQueue;
         private readonly ILogger<PromoImageOCRService> _logger;
@@ -27,11 +27,13 @@ namespace AfnGuideAPI.HostedServices
         {
             _logger.LogInformation($"{nameof(PromoImageOCRService)} is starting.");
 
-            // Delay 2 minutes to allow the database to be created if necessary
-            await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
-
             while (!stoppingToken.IsCancellationRequested)
             {
+                if (!IsPromoCompleted)
+                {
+                    continue;
+                }
+
                 // Get all promos where IsActive = true and AfnId is null
                 var promos = await _dbContext.Promos
                     .Where(p => p.IsActive && p.Image != null)
@@ -44,8 +46,8 @@ namespace AfnGuideAPI.HostedServices
                         await ProcessPromoAsync(promo, token);
                     });
                 }
-                // Delay for 1 hour
-                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+
+                IsPromoCompleted = false;
             }
         }
 

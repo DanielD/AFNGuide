@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace AfnGuideAPI.HostedServices
 {
-    public class RssIngestionService : BackgroundServiceBase
+    public class RssIngestionService : ConsecutiveBackgroundServiceBase
     {
         private readonly ILogger<RssIngestionService> _logger;
 
@@ -33,6 +33,8 @@ namespace AfnGuideAPI.HostedServices
             // Repeat every 4 hours
             while (!stoppingToken.IsCancellationRequested)
             {
+                IsRssCompleted = false;
+
                 // Delete old schedule files
                 await DeleteOldScheduleFiles();
 
@@ -63,6 +65,12 @@ namespace AfnGuideAPI.HostedServices
             foreach (int channelId in _channels.Keys)
             {
                 var response = await client.GetAsync(_channels[channelId], stoppingToken);
+                if (response.IsSuccessStatusCode == false)
+                {
+                    _logger.LogError($"Error ingesting RSS feed for channel {channelId}");
+                    continue;
+                }
+
                 var content = await response.Content.ReadAsStringAsync(stoppingToken);
                 content = content.Replace("afn:", "afn_");
                 var rss = XDocument.Parse(content);
@@ -104,6 +112,8 @@ namespace AfnGuideAPI.HostedServices
                     await SaveRssFeedToDatabase(schedule);
                 }
             }
+
+            IsRssCompleted = true;
         }
 
         private async Task DeleteOldScheduleFiles()

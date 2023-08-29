@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace AfnGuideAPI.HostedServices
 {
-    public partial class PromoIngestionService : BackgroundServiceBase
+    public partial class PromoIngestionService : ConsecutiveBackgroundServiceBase
     {
         private readonly ILogger<PromoIngestionService> _logger;
 
@@ -20,12 +20,14 @@ namespace AfnGuideAPI.HostedServices
         {
             _logger.LogInformation($"{nameof(PromoIngestionService)} is starting.");
 
-            // Delay 2 minutes to allow the database to be created if necessary
-            await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
-
             // Repeat every 1 hour
             while (!stoppingToken.IsCancellationRequested)
             {
+                if (!IsRssCompleted)
+                {
+                    continue;
+                }
+
                 // Delete old promo files
                 await DeleteOldPromos();
 
@@ -62,6 +64,9 @@ namespace AfnGuideAPI.HostedServices
             using var client = GetNewHttpClient();
             var response = await client
                 .GetAsync("https://myafn.dodmedia.osd.mil/default.aspx", stoppingToken);
+            if (response.IsSuccessStatusCode == false)
+                throw new Exception($"Error downloading promotions from AFN. StatusCode: {response.StatusCode}");
+
             var html = await response.Content.ReadAsStringAsync(stoppingToken);
             html = html.RemoveWhiteSpace();
             // Disable old promos
@@ -107,6 +112,8 @@ namespace AfnGuideAPI.HostedServices
                 // Save Promo A to database
                 await SavePromoToDatabase(promo);
             }
+
+            IsPromoCompleted = true;
         }
 
         private string ParseIdFromImage(string value)

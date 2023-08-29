@@ -1,6 +1,7 @@
 ﻿using AfnGuideAPI.Data;
 using AfnGuideAPI.Models;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace AfnGuideAPI.HostedServices
@@ -36,6 +37,9 @@ namespace AfnGuideAPI.HostedServices
             using var client = GetNewHttpClient();
             var response = await client
                 .GetAsync($"https://myafn.dodmedia.osd.mil/json/bulletins.json?_={DateTime.UtcNow.Ticks}", stoppingToken);
+            if (response.IsSuccessStatusCode == false)
+                throw new Exception($"Error downloading bulletins. Status code: {response.StatusCode}.");
+
             var html = await response.Content.ReadAsStringAsync(stoppingToken);
             html = CleanHtml(html);
             // Disable all bulletins in the database
