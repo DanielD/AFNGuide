@@ -90,7 +90,7 @@ namespace AfnGuideAPI.Controllers
                                         && s.AirDateUTC!.AddMinutes(timeZone.GetCurrentOffset()) >= timeZone.GetCurrentTime())
                                     .OrderBy(s => s.AirDateUTC)
                                     .ToListAsync()
-                                : new List<Schedule>();
+                                : new List<Models.Schedule>();
 
                             promoLinks.Add(new ViewModels.Promo
                             {

@@ -21,7 +21,7 @@ namespace AfnGuideAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Bulletin>), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
             try

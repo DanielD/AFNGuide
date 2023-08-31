@@ -1,4 +1,5 @@
 ﻿using AfnGuideAPI.Data;
+using AfnGuideAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using TimeZone = AfnGuideAPI.Models.TimeZone;
 
@@ -33,6 +34,15 @@ namespace AfnGuideAPI.Controllers
         {
             var timeZones = await GetTimeZonesAsync();
             return timeZones?.FirstOrDefault(tz => tz.Id == timeZoneId);
+        }
+
+        protected async Task<List<Channel>?> GetChannelsAsync()
+        {
+            return await _cache.GetOrCreateAsync(CacheKeys.Channels, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                return await _dbContext.Channels.ToListAsync();
+            });
         }
     }
 }

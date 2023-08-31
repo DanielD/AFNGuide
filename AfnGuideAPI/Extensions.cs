@@ -1,5 +1,8 @@
 ﻿using AfnGuideAPI.Models;
+using System.Data;
+using System.Data.Common;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace AfnGuideAPI
@@ -122,6 +125,14 @@ namespace AfnGuideAPI
                 .Replace("\n", replacementValue)
                 .Replace("\r", replacementValue)
                 .Replace("\t", replacementValue);
+        }
+
+        public static async IAsyncEnumerable<T> CastAsAsync<T>(this DbDataReader reader, Func<IDataRecord, T> typeBuilder, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                yield return typeBuilder(reader);
+            }
         }
     }
 }
