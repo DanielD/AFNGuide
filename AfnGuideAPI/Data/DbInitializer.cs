@@ -20,7 +20,8 @@ namespace AfnGuideAPI.Data
                         ChannelNumber = 2,
                         Color = "#eec3c3",
                         Image = "chnl_icon_primeATL.png",
-                        Title = "AFN|prime Atlantic"
+                        Title = "AFN|prime Atlantic",
+                        CreatedOnUTC = DateTime.UtcNow,
                     },
                     new Channel
                     {
@@ -29,7 +30,8 @@ namespace AfnGuideAPI.Data
                         ChannelNumber = 5,
                         Color = "#b4d1db",
                         Image = "chnl_icon_news.png",
-                        Title = "AFN|news"
+                        Title = "AFN|news",
+                        CreatedOnUTC = DateTime.UtcNow,
                     },
                     new Channel
                     {
@@ -38,7 +40,8 @@ namespace AfnGuideAPI.Data
                         ChannelNumber = 1,
                         Color = "#a3dcbc",
                         Image = "chnl_icon_sports.png",
-                        Title = "AFN|sports"
+                        Title = "AFN|sports",
+                        CreatedOnUTC = DateTime.UtcNow,
                     },
                     new Channel
                     {
@@ -47,7 +50,8 @@ namespace AfnGuideAPI.Data
                         ChannelNumber = 4,
                         Color = "#eec3c3",
                         Image = "chnl_icon_primePAC.png",
-                        Title = "AFN|prime Pacific"
+                        Title = "AFN|prime Pacific",
+                        CreatedOnUTC = DateTime.UtcNow,
                     },
                     new Channel
                     {
@@ -56,7 +60,8 @@ namespace AfnGuideAPI.Data
                         ChannelNumber = 3,
                         Color = "#c7ccf8",
                         Image = "chnl_icon_spectrum.png",
-                        Title = "AFN|spectrum"
+                        Title = "AFN|spectrum",
+                        CreatedOnUTC = DateTime.UtcNow,
                     },
                     new Channel
                     {
@@ -65,7 +70,8 @@ namespace AfnGuideAPI.Data
                         ChannelNumber = 6,
                         Color = "#afecde",
                         Image = "chnl_icon_sports2.png",
-                        Title = "AFN|sports2"
+                        Title = "AFN|sports2",
+                        CreatedOnUTC = DateTime.UtcNow,
                     },
                     new Channel
                     {
@@ -76,8 +82,7 @@ namespace AfnGuideAPI.Data
                         Image = "chnl_icon_family.png,chnl_icon_pulse.png",
                         Title = "AFN|family,AFN|pulse",
                         IsSplit = true,
-                        StartTime = "PT22H",
-                        EndTime = "PT7H59M"
+                        CreatedOnUTC = DateTime.UtcNow,
                     },
                     new Channel
                     {
@@ -86,7 +91,8 @@ namespace AfnGuideAPI.Data
                         ChannelNumber = 10,
                         Color = "#d1d0d1",
                         Image = "chnl_icon_movie.png",
-                        Title = "AFN|movie"
+                        Title = "AFN|movie",
+                        CreatedOnUTC = DateTime.UtcNow,
                     }
                 };
                 foreach (var channel in channels)

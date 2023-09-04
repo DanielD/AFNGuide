@@ -9,6 +9,13 @@
         public string? Color { get; set; }
         public string? Image { get; set; }
         public bool IsSplit { get; set; }
+
+        public ICollection<ChannelTimeZone> ChannelTimeZones { get; set; } = new List<ChannelTimeZone>();
+    }
+
+    public class ChannelTimeZone
+    {
+        public int TimeZoneId { get; set; }
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }
     }

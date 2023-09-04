@@ -17,6 +17,10 @@ namespace AfnGuideAPI.Models
         public DateTime? DSTStartsOn { get; set; }
         public DateTime? DSTEndsOn { get; set; }
         public bool IsBackwards { get; set; }
+        public DateTime CreatedOnUTC { get; set; }
+        public DateTime? ModifiedOnUTC { get; set; }
+
+        public ICollection<ChannelTimeZone> ChannelTimeZones { get; set; } = new List<ChannelTimeZone>();
 
         public TimeZone()
         {
@@ -32,6 +36,7 @@ namespace AfnGuideAPI.Models
             DSTStartsOn = dstStartsOn;
             DSTEndsOn = dstEndsOn;
             IsBackwards = isBackwards;
+            CreatedOnUTC = DateTime.UtcNow;
         }
 
         public DateTime GetCurrentTime()

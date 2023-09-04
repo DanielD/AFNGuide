@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace AfnGuideAPI.Controllers
@@ -69,6 +70,8 @@ namespace AfnGuideAPI.Controllers
                 ph ??= string.Empty;
                 uw ??= Array.Empty<string>();
 
+                uw = uw.Select(w => w.Replace("\"", string.Empty).Trim()).ToArray();
+
                 var searchQuery = new Data.ScheduleSearchQuery
                 {
                     SearchWords = q,
@@ -81,7 +84,7 @@ namespace AfnGuideAPI.Controllers
                     UnwantedWords = uw
                 };
 
-                var cacheKey = $"ScheduleController.Search({searchQuery.GetHashCode()})";
+                var cacheKey = $"ScheduleController.Search({JsonConvert.SerializeObject(searchQuery)})";
                 var result = await _cache.GetOrCreateAsync(cacheKey, async entry =>
                 {
                     entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
@@ -103,7 +106,7 @@ namespace AfnGuideAPI.Controllers
                     });
                 }
 
-                if (p > Math.Ceiling(Convert.ToDecimal(totalCount / sz)))
+                if (p > 1 && p > Math.Ceiling(Convert.ToDecimal(totalCount / sz)))
                 {
                     return BadRequest($"Page number ({p}) is out of range.");
                 }

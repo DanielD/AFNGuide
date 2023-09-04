@@ -12,6 +12,7 @@ namespace AfnGuideAPI.Data
         public DbSet<TimeZone> TimeZones { get; set; }
         public DbSet<Bulletin> Bulletins { get; set; }
         public DbSet<Promo> Promos { get; set; }
+        public DbSet<ChannelTimeZone> ChannelTimeZones { get; set; }
 
         public AfnGuideDbContext()
         {
@@ -38,6 +39,24 @@ namespace AfnGuideAPI.Data
                 .WithOne(s => s.Promo)
                 .HasForeignKey<Promo>(p => p.AfnId)
                 .HasPrincipalKey<Schedule>(s => s.AfnId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Channel>()
+                .HasMany(c => c.ChannelTimeZones)
+                .WithOne(ctz => ctz.Channel)
+                .HasForeignKey(ctz => ctz.ChannelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChannelTimeZone>()
+                .HasOne(ctz => ctz.TimeZone)
+                .WithMany(tz => tz.ChannelTimeZones)
+                .HasForeignKey(ctz => ctz.TimeZoneId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChannelTimeZone>()
+                .HasOne(ctz => ctz.Channel)
+                .WithMany(c => c.ChannelTimeZones)
+                .HasForeignKey(ctz => ctz.ChannelId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

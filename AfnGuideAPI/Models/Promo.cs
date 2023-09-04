@@ -17,6 +17,7 @@ namespace AfnGuideAPI.Models
         public bool IsPromoB { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreatedOnUTC { get; set; }
+        public DateTime? ModifiedOnUTC { get; set; }
         public byte[]? ImageData { get; set; }
 
         public virtual Schedule? Schedule { get; set; }

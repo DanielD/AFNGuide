@@ -29,6 +29,7 @@ namespace AfnGuideAPI.Controllers
                 {
                     entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(365);
                     return await _dbContext.Channels
+                        .Include(c => c.ChannelTimeZones)
                         .OrderBy(c => c.ChannelNumber)
                         .Select(c => new ViewModels.Channel
                         {
@@ -36,11 +37,15 @@ namespace AfnGuideAPI.Controllers
                             Abbreviation = c.Abbreviation,
                             ChannelNumber = c.ChannelNumber,
                             Color = c.Color,
-                            EndTime = c.EndTime,
                             Image = c.Image,
                             IsSplit = c.IsSplit,
-                            StartTime = c.StartTime,
-                            Title = c.Title
+                            Title = c.Title,
+                            ChannelTimeZones = c.ChannelTimeZones.Select(ctz => new ViewModels.ChannelTimeZone
+                            {
+                                TimeZoneId = ctz.TimeZoneId,
+                                StartTime = ctz.StartTime,
+                                EndTime = ctz.EndTime
+                            }).ToList()
                         })
                         .ToListAsync();
                 });

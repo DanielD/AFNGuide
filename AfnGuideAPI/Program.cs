@@ -19,6 +19,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.InitializeDatabase();
 
+builder.Services.AddHostedService<ChannelTimeZonesIngestionService>();
 builder.Services.AddHostedService<RssIngestionService>();
 builder.Services.AddHostedService<PromoIngestionService>();
 builder.Services.AddHostedService<BulletinIngestionService>();

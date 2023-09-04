@@ -4,6 +4,7 @@ using AfnGuideAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AfnGuideAPI.Migrations
 {
     [DbContext(typeof(AfnGuideDbContext))]
-    partial class AfnGuideDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230903205724_CreatedModified")]
+    partial class CreatedModified
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +67,7 @@ namespace AfnGuideAPI.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedOnUTC")
+                    b.Property<DateTime?>("CreatedOnUTC")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EndTime")
@@ -88,41 +91,6 @@ namespace AfnGuideAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Channels");
-                });
-
-            modelBuilder.Entity("AfnGuideAPI.Models.ChannelTimeZone", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChannelId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EndTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("StartTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TimeZoneId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChannelId");
-
-                    b.HasIndex("TimeZoneId");
-
-                    b.ToTable("ChannelTimeZones");
                 });
 
             modelBuilder.Entity("AfnGuideAPI.Models.Promo", b =>
@@ -232,7 +200,7 @@ namespace AfnGuideAPI.Migrations
                     b.Property<string>("Abbreviation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedOnUTC")
+                    b.Property<DateTime?>("CreatedOnUTC")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DSTEndsOn")
@@ -264,25 +232,6 @@ namespace AfnGuideAPI.Migrations
                     b.ToTable("TimeZones");
                 });
 
-            modelBuilder.Entity("AfnGuideAPI.Models.ChannelTimeZone", b =>
-                {
-                    b.HasOne("AfnGuideAPI.Models.Channel", "Channel")
-                        .WithMany("ChannelTimeZones")
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("AfnGuideAPI.Models.TimeZone", "TimeZone")
-                        .WithMany("ChannelTimeZones")
-                        .HasForeignKey("TimeZoneId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Channel");
-
-                    b.Navigation("TimeZone");
-                });
-
             modelBuilder.Entity("AfnGuideAPI.Models.Promo", b =>
                 {
                     b.HasOne("AfnGuideAPI.Models.Schedule", "Schedule")
@@ -307,19 +256,12 @@ namespace AfnGuideAPI.Migrations
 
             modelBuilder.Entity("AfnGuideAPI.Models.Channel", b =>
                 {
-                    b.Navigation("ChannelTimeZones");
-
                     b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("AfnGuideAPI.Models.Schedule", b =>
                 {
                     b.Navigation("Promo");
-                });
-
-            modelBuilder.Entity("AfnGuideAPI.Models.TimeZone", b =>
-                {
-                    b.Navigation("ChannelTimeZones");
                 });
 #pragma warning restore 612, 618
         }

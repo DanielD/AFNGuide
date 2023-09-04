@@ -24,6 +24,7 @@ namespace AfnGuideAPI.Models
         public int? Year { get; set; }
         public bool IsPremiere { get; set; }
         public DateTime CreatedOnUTC { get; set; }
+        public DateTime? ModifiedOnUTC { get; set; }
         //[Column(TypeName = "decimal(2,1)")]
         //public decimal? RatingScore { get; set; } = 0.0M;
         //public string? Director { get; set; }
