@@ -27,8 +27,10 @@ BEGIN
 	DECLARE @sql nvarchar(max) = N''
 	DECLARE @cr nvarchar(max) = N'
 '
-	DECLARE @tb nvarchar(max) = '					'
-	DECLARE @base nvarchar(max) = ''
+	DECLARE @tb nvarchar(max) = N'					'
+	DECLARE @or nvarchar(2) = N'OR'
+	DECLARE @and nvarchar(3) = N'AND'
+	DECLARE @base nvarchar(max) = N''
 	SET @sql = @sql + N'
 				DECLARE @Schedules TABLE(
 					[Id] [uniqueidentifier] NOT NULL,
@@ -80,12 +82,12 @@ BEGIN
 		SET @sql = @sql + @tb + '-- Check End Date' + @cr
 		SET @sql = @sql + @tb + 'AND ([s].[AirDateUTC] <= ''' + FORMAT(@endDate, 'MM/dd/yyyy') + ''') ' + @cr
 	END
-	IF @rating IS NOT NULL
+	IF @rating IS NOT NULL AND @rating <> 'ANY'
 	BEGIN
 		SET @sql = @sql + @tb + '-- Check Rating' + @cr
 		SET @sql = @sql + @tb + 'AND ([s].[Rating] IN (SELECT [s1].[Rating] FROM [dbo].[Schedules] [s1] WHERE ((''' + @rating + ''' LIKE N'''') OR CHARINDEX(''' + @rating + ''', [s].[Rating]) > 0))) ' + @cr
 	END
-	IF @channels IS NOT NULL
+	IF @channels IS NOT NULL AND LEN(RTRIM(@channels)) > 0
 	BEGIN
 		SET @sql = @sql + @tb + '-- Check Channels' + @cr
 		SET @sql = @sql + @tb + 'AND ([s].[ChannelId] IN (' + @channels + ')) ' + @cr
@@ -138,24 +140,24 @@ BEGIN
 	DECLARE @unwantedWordsSqlGenre nvarchar(max) = ''
 	IF @unwantedWords IS NOT NULL AND LEN(TRIM(@unwantedWords)) > 0
 	BEGIN
-		SET @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + 'AND (1=0 ' + @cr
+		SET @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + 'AND (1=1 ' + @cr
 		SET @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + '-- Check Title' + @cr 
-		SELECT @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + '	OR ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Title]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SELECT @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Title]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + ')' + @cr
 
-		SET @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + 'AND (1=0 ' + @cr
+		SET @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + 'AND (1=1 ' + @cr
 		SET @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + '-- Check Description' + @cr 
-		SELECT @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + '	OR ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Description]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SELECT @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Description]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + ')' + @cr
 
-		SET @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + 'AND (1=0 ' + @cr
+		SET @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + 'AND (1=1 ' + @cr
 		SET @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + '-- Check Episode Title' + @cr 
-		SELECT @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + '	OR ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[EpisodeTitle]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SELECT @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[EpisodeTitle]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + ')' + @cr
 
 		SET @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + '-- Check Genre' + @cr 
-		SET @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + 'AND (1=0 ' + @cr
-		SELECT @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + '	OR ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Genre]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SET @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + 'AND (1=1 ' + @cr
+		SELECT @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Genre]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + ')' + @cr
 	END
 
@@ -304,7 +306,7 @@ BEGIN
 	SET @sql = @sql + N'SELECT TOP 500 * FROM @Schedules' + @cr
 	SET @sql = @sql + N'	ORDER BY [AirDateUTC] ASC' + @cr
 
-	--exec LongPrint @sql
+	exec LongPrint @sql
 
 	exec sp_executesql @sql
 END
