@@ -22,6 +22,7 @@ namespace AfnGuideAPI.Models
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
         public ICollection<ChannelTimeZone> ChannelTimeZones { get; set; } = new List<ChannelTimeZone>();
         public ICollection<SportsSchedule> SportsSchedules { get; set; } = new List<SportsSchedule>();
+        public ICollection<TVSeries> TVSeries { get; set; } = new List<TVSeries>();
     }
 
     [Table("ChannelTimeZones")]

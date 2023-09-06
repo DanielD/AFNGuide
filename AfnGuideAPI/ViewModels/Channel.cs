@@ -9,6 +9,7 @@
         public string? Color { get; set; }
         public string? Image { get; set; }
         public bool IsSplit { get; set; }
+        public bool IsSports { get; set; }
 
         public ICollection<ChannelTimeZone> ChannelTimeZones { get; set; } = new List<ChannelTimeZone>();
     }

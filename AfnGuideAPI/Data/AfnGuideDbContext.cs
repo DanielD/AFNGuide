@@ -17,6 +17,7 @@ namespace AfnGuideAPI.Data
         public DbSet<SportsSchedule> SportsSchedules { get; set; }
         public DbSet<SportsNetwork> SportsNetworks { get; set; }
         public DbSet<SportsCategory> SportsCategories { get; set; }
+        public DbSet<TVSeries> TVSeries { get; set; }
 
 
         public AfnGuideDbContext()
@@ -83,6 +84,12 @@ namespace AfnGuideAPI.Data
                 .HasOne(ss => ss.SportsCategory)
                 .WithMany(sc => sc.SportsSchedules)
                 .HasForeignKey(ss => ss.SportsCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TVSeries>()
+                .HasOne(ts => ts.Channel)
+                .WithMany(c => c.TVSeries)
+                .HasForeignKey(ts => ts.ChannelId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

@@ -53,5 +53,14 @@ namespace AfnGuideAPI.Controllers
                 return await _dbContext.Channels.Where(c => c.IsSports).ToListAsync();
             });
         }
+
+        protected async Task<List<TVSeries>?> GetTVSeriesAsync()
+        {
+            return await _cache.GetOrCreateAsync(CacheKeys.TVSeries, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+                return await _dbContext.TVSeries.ToListAsync();
+            });
+        }
     }
 }

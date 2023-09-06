@@ -39,6 +39,7 @@ namespace AfnGuideAPI.Controllers
                             Color = c.Color,
                             Image = c.Image,
                             IsSplit = c.IsSplit,
+                            IsSports = c.IsSports,
                             Title = c.Title,
                             ChannelTimeZones = c.ChannelTimeZones.Select(ctz => new ViewModels.ChannelTimeZone
                             {

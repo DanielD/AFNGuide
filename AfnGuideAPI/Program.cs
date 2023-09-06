@@ -24,6 +24,7 @@ builder.Services.AddHostedService<RssIngestionService>();
 builder.Services.AddHostedService<PromoIngestionService>();
 builder.Services.AddHostedService<BulletinIngestionService>();
 builder.Services.AddHostedService<SportsIngestionService>();
+builder.Services.AddHostedService<TVSeriesIngestionService>();
 
 builder.Services.AddSingleton<IBackgroundTaskQueue>(_ => new DefaultBackgroundTaskQueue(1000));
 builder.Services.AddHostedService<QueuedHostedService>();

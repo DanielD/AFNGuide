@@ -1,7 +1,5 @@
-﻿using AfnGuideAPI.Data;
-using AfnGuideAPI.Models;
+﻿using AfnGuideAPI.Models;
 using Newtonsoft.Json;
-using System.Net;
 using System.Text.RegularExpressions;
 
 namespace AfnGuideAPI.HostedServices

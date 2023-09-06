@@ -145,5 +145,33 @@ namespace AfnGuideAPI.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet("series")]
+        [ProducesResponseType(typeof(List<ViewModels.TVSeries>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTVSeries()
+        {
+            try
+            {
+                var tvSeries = await GetTVSeriesAsync();
+
+                var output = tvSeries!.Select(x => new ViewModels.TVSeries
+                {
+                    ChannelId = x.ChannelId,
+                    Title = x.Name,
+                    IsSplit = x.IsSplit,
+                    PremiereType = x.PremiereType,
+                    Season = x.Season,
+                    StartDate = x.StartDate,
+                });
+
+                return Ok(output);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting TV series.");
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
