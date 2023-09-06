@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AfnGuideAPI.Data.SearchEngines.Schedules;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -37,7 +38,7 @@ namespace AfnGuideAPI.Controllers
         /// <param name="p">Page number (default is 1)</param>
         /// <returns></returns>
         [HttpGet("search")]
-        [ProducesResponseType(typeof(ViewModels.SearchResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ViewModels.SearchResult<ViewModels.Schedule>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Search(
@@ -46,7 +47,7 @@ namespace AfnGuideAPI.Controllers
             [FromQuery] string? r, [FromQuery] string? f, [FromQuery] string? ph,
             [FromQuery] string[]? uw, [FromQuery] int? sz = 10, [FromQuery] int? p = 1)
         {
-            if (q == null || q.Length == 0)
+            if ((q == null || q.Length == 0) && (ph == null || ph.Length == 0))
             {
                 return BadRequest("Query (q) is required.");
             }
@@ -65,14 +66,15 @@ namespace AfnGuideAPI.Controllers
                 p ??= 1;
                 sz ??= 10;
                 ch ??= (await GetChannelsAsync())!.Select(c => c.Id).ToArray();
-                r ??= Data.ScheduleRatings.Any;
-                f ??= Data.ScheduleSearchFields.All;
+                r ??= ScheduleRatings.Any;
+                f ??= ScheduleSearchFields.All;
                 ph ??= string.Empty;
                 uw ??= Array.Empty<string>();
+                q ??= Array.Empty<string>();
 
                 uw = uw.Select(w => w.Replace("\"", string.Empty).Trim()).ToArray();
 
-                var searchQuery = new Data.ScheduleSearchQuery
+                var searchQuery = new Data.SearchEngines.Schedules.SearchQuery
                 {
                     SearchWords = q,
                     Channels = ch,
@@ -89,7 +91,7 @@ namespace AfnGuideAPI.Controllers
                 {
                     entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
 
-                    using var searchEngine = new Data.ScheduleSearchEngine(_loggerFactory, _serviceScopeFactory);
+                    using var searchEngine = new Data.SearchEngines.Schedules.SearchEngine(_loggerFactory, _serviceScopeFactory);
                     var result = await searchEngine.SearchAsync(searchQuery);
 
                     return result;
@@ -98,7 +100,7 @@ namespace AfnGuideAPI.Controllers
                 var totalCount = result!.TotalCount;
                 if (totalCount == 0)
                 {
-                    return Ok(new ViewModels.SearchResult
+                    return Ok(new ViewModels.SearchResult<ViewModels.Schedule>
                     {
                         Total = 0,
                         Page = 1,
@@ -111,7 +113,7 @@ namespace AfnGuideAPI.Controllers
                     return BadRequest($"Page number ({p}) is out of range.");
                 }
 
-                var output = new ViewModels.SearchResult
+                var output = new ViewModels.SearchResult<ViewModels.Schedule>
                 {
                     Total = totalCount,
                     Page = p.Value,

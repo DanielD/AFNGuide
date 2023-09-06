@@ -9,7 +9,7 @@
 
 /****** Object:  StoredProcedure [dbo].[sp_SearchSchedules]    Script Date: 8/30/2023 10:55:48 PM ******/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND OBJECT_ID = OBJECT_ID('dbo.sp_SearchSchedules'))
-   exec sp_executesql 'CREATE PROCEDURE [dbo].[sp_SearchSchedules] AS BEGIN SET NOCOUNT ON; END'
+   exec sp_executesql N'CREATE PROCEDURE [dbo].[sp_SearchSchedules] AS BEGIN SET NOCOUNT ON; END'
 GO
 
 ALTER PROCEDURE [dbo].[sp_SearchSchedules](
@@ -85,7 +85,7 @@ BEGIN
 	IF @rating IS NOT NULL AND @rating <> 'ANY'
 	BEGIN
 		SET @sql = @sql + @tb + '-- Check Rating' + @cr
-		SET @sql = @sql + @tb + 'AND ([s].[Rating] IN (SELECT [s1].[Rating] FROM [dbo].[Schedules] [s1] WHERE ((''' + @rating + ''' LIKE N'''') OR CHARINDEX(''' + @rating + ''', [s].[Rating]) > 0))) ' + @cr
+		SET @sql = @sql + @tb + 'AND ([s].[Rating] IN (SELECT [s1].[Rating] FROM [dbo].[Schedules] [s1] WHERE ((''' + @rating + ''' LIKE N'''') OR CHARINDEX(''' + @rating + ''', [s1].[Rating]) > 0))) ' + @cr
 	END
 	IF @channels IS NOT NULL AND LEN(RTRIM(@channels)) > 0
 	BEGIN
@@ -101,16 +101,16 @@ BEGIN
 	IF @searchWords IS NOT NULL AND LEN(TRIM(@searchWords)) > 0
 	BEGIN
 		SET @searchWordsSqlTitle = @searchWordsSqlTitle + @tb + '-- Check Title' + @cr 
-		SELECT @searchWordsSqlTitle = @searchWordsSqlTitle + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Title]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
+		SELECT @searchWordsSqlTitle = @searchWordsSqlTitle + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[Title]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
 
 		SET @searchWordsSqlDescription = @searchWordsSqlDescription + @tb + '-- Check Description' + @cr 
-		SELECT @searchWordsSqlDescription = @searchWordsSqlDescription + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Description]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
+		SELECT @searchWordsSqlDescription = @searchWordsSqlDescription + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[Description]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
 
 		SET @searchWordsSqlEpisodeTitle = @searchWordsSqlEpisodeTitle + @tb + '-- Check Episode Title' + @cr 
-		SELECT @searchWordsSqlEpisodeTitle = @searchWordsSqlEpisodeTitle + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[EpisodeTitle]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
+		SELECT @searchWordsSqlEpisodeTitle = @searchWordsSqlEpisodeTitle + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[EpisodeTitle]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
 
 		SET @searchWordsSqlGenre = @searchWordsSqlGenre + @tb + '-- Check Genre' + @cr 
-		SELECT @searchWordsSqlGenre = @searchWordsSqlGenre + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Genre]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
+		SELECT @searchWordsSqlGenre = @searchWordsSqlGenre + @tb + '	OR ([s].[Id] IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[Genre]) > 0)))' + @cr FROM STRING_SPLIT(@searchWords, '|')
 	END
 
 	-- SEARCH PHRASES
@@ -121,16 +121,16 @@ BEGIN
 	IF @searchPhrase IS NOT NULL AND LEN(RTRIM(@searchPhrase)) > 0
 	BEGIN
 		SET @searchPhraseSqlTitle = @searchPhraseSqlTitle + @tb + '-- Check Title' + @cr 
-		SET @searchPhraseSqlTitle = @searchPhraseSqlTitle + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(@searchPhrase, '', '''') + ''', [s].[Title]) > 0)' + @cr 
+		SET @searchPhraseSqlTitle = @searchPhraseSqlTitle + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(REPLACE(@searchPhrase, '', ''''), '"', '') + ''', [s].[Title]) > 0)' + @cr 
 
 		SET @searchPhraseSqlDescription = @searchPhraseSqlDescription + @tb + '-- Check Description' + @cr 
-		SET @searchPhraseSqlDescription = @searchPhraseSqlDescription + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(@searchPhrase, '', '''') + ''', [s].[Description]) > 0)' + @cr 
+		SET @searchPhraseSqlDescription = @searchPhraseSqlDescription + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(REPLACE(@searchPhrase, '', ''''), '"', '') + ''', [s].[Description]) > 0)' + @cr 
 
 		SET @searchPhraseSqlEpisodeTitle = @searchPhraseSqlEpisodeTitle + @tb + '-- Check Episode Title' + @cr 
-		SET @searchPhraseSqlEpisodeTitle = @searchPhraseSqlEpisodeTitle + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(@searchPhrase, '', '''') + ''', [s].[EpisodeTitle]) > 0)' + @cr 
+		SET @searchPhraseSqlEpisodeTitle = @searchPhraseSqlEpisodeTitle + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(REPLACE(@searchPhrase, '', ''''), '"', '')+ ''', [s].[EpisodeTitle]) > 0)' + @cr 
 
 		SET @searchPhraseSqlGenre = @searchPhraseSqlGenre + @tb + '-- Check Genre' + @cr 
-		SET @searchPhraseSqlGenre = @searchPhraseSqlGenre + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(@searchPhrase, '', '''') + ''', [s].[Genre]) > 0)' + @cr 
+		SET @searchPhraseSqlGenre = @searchPhraseSqlGenre + @tb + '	OR ((''' + REPLACE(@searchPhrase, '', '''') + ''' LIKE N'''') OR CHARINDEX(''' + REPLACE(REPLACE(@searchPhrase, '', ''''), '"', '') + ''', [s].[Genre]) > 0)' + @cr 
 	END
 
 	-- EXCLUDE UNWANTED WORDS
@@ -142,22 +142,22 @@ BEGIN
 	BEGIN
 		SET @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + 'AND (1=1 ' + @cr
 		SET @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + '-- Check Title' + @cr 
-		SELECT @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Title]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SELECT @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[Title]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlTitle = @unwantedWordsSqlTitle + @tb + ')' + @cr
 
 		SET @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + 'AND (1=1 ' + @cr
 		SET @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + '-- Check Description' + @cr 
-		SELECT @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Description]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SELECT @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[Description]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlDescription = @unwantedWordsSqlDescription + @tb + ')' + @cr
 
 		SET @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + 'AND (1=1 ' + @cr
 		SET @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + '-- Check Episode Title' + @cr 
-		SELECT @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[EpisodeTitle]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SELECT @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[EpisodeTitle]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlEpisodeTitle = @unwantedWordsSqlEpisodeTitle + @tb + ')' + @cr
 
 		SET @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + '-- Check Genre' + @cr 
 		SET @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + 'AND (1=1 ' + @cr
-		SELECT @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s].[Genre]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
+		SELECT @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + '	AND ([s].[Id] NOT IN (SELECT [s1].[Id] FROM [dbo].[Schedules] [s1] WHERE ((''' + value + ''' LIKE N'''') OR CHARINDEX(''' + value + ''', [s1].[Genre]) > 0)))' + @cr FROM STRING_SPLIT(@unwantedWords, '|')
 		SET @unwantedWordsSqlGenre = @unwantedWordsSqlGenre + @tb + ')' + @cr
 	END
 
@@ -303,7 +303,7 @@ BEGIN
 	SET @sql = @sql + @cr
 	SET @sql = @sql + N'SELECT COUNT(*) AS ''TotalCount'' FROM @Schedules' + @cr
 	SET @sql = @sql + @cr
-	SET @sql = @sql + N'SELECT TOP 500 * FROM @Schedules' + @cr
+	SET @sql = @sql + N'SELECT * FROM @Schedules' + @cr
 	SET @sql = @sql + N'	ORDER BY [AirDateUTC] ASC' + @cr
 
 	exec LongPrint @sql

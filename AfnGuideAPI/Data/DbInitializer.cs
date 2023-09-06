@@ -22,6 +22,7 @@ namespace AfnGuideAPI.Data
                         Image = "chnl_icon_primeATL.png",
                         Title = "AFN|prime Atlantic",
                         CreatedOnUTC = DateTime.UtcNow,
+                        IsSports = true
                     },
                     new Channel
                     {
@@ -42,6 +43,7 @@ namespace AfnGuideAPI.Data
                         Image = "chnl_icon_sports.png",
                         Title = "AFN|sports",
                         CreatedOnUTC = DateTime.UtcNow,
+                        IsSports = true
                     },
                     new Channel
                     {
@@ -52,6 +54,7 @@ namespace AfnGuideAPI.Data
                         Image = "chnl_icon_primePAC.png",
                         Title = "AFN|prime Pacific",
                         CreatedOnUTC = DateTime.UtcNow,
+                        IsSports = true
                     },
                     new Channel
                     {
@@ -72,6 +75,7 @@ namespace AfnGuideAPI.Data
                         Image = "chnl_icon_sports2.png",
                         Title = "AFN|sports2",
                         CreatedOnUTC = DateTime.UtcNow,
+                        IsSports = true
                     },
                     new Channel
                     {

@@ -1,36 +1,28 @@
 ﻿using AfnGuideAPI.Models;
 
-namespace AfnGuideAPI.Data
+namespace AfnGuideAPI.Data.SearchEngines.Schedules
 {
-    public class ScheduleSearchEngine : IDisposable
+    public class SearchEngine : SearchEngineBase<Schedule>
     {
-        private readonly ILogger<ScheduleSearchEngine> _logger;
-        protected readonly AfnGuideDbContext _dbContext;
-
-        public ScheduleSearchEngine(
+        public SearchEngine(
             ILoggerFactory loggerFactory,
             IServiceScopeFactory serviceScopeFactory)
+            : base(loggerFactory, serviceScopeFactory)
         {
-            _logger = loggerFactory.CreateLogger<ScheduleSearchEngine>();
-            _dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<AfnGuideDbContext>();
         }
-
-        public async Task<ScheduleSearchResults> SearchAsync(ScheduleSearchQuery q)
+        
+        protected override async Task<ISearchResults<Schedule>> SearchInternalAsync(
+            ISearchQuery query)
         {
-            var result = await _dbContext.ScheduleSearch(
-                q.SearchWords, q.Channels, q.StartDate, q.EndDate, 
-                q.Rating?.Split(','), q.SearchField, q.SearchPhrase, 
+            var q = query as SearchQuery;
+            var result = await _dbContext.ScheduleSearchAsync(
+                q.SearchWords, q.Channels, q.StartDate, q.EndDate,
+                q.Rating?.Split(','), q.SearchField?.Trim(), q.SearchPhrase?.Trim(),
                 q.UnwantedWords);
 
             result.Query = q;
 
             return result;
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            ((IDisposable)_dbContext).Dispose();
         }
     }
 

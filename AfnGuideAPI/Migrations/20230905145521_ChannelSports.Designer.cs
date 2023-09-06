@@ -4,6 +4,7 @@ using AfnGuideAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AfnGuideAPI.Migrations
 {
     [DbContext(typeof(AfnGuideDbContext))]
-    partial class AfnGuideDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230905145521_ChannelSports")]
+    partial class ChannelSports
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,103 +224,6 @@ namespace AfnGuideAPI.Migrations
                     b.ToTable("Schedules");
                 });
 
-            modelBuilder.Entity("AfnGuideAPI.Models.SportsCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SportsCategories");
-                });
-
-            modelBuilder.Entity("AfnGuideAPI.Models.SportsNetwork", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SportsNetworks");
-                });
-
-            modelBuilder.Entity("AfnGuideAPI.Models.SportsSchedule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AfnId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("AirDateUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ChannelId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsLive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsTapeDelayed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOnUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SportName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SportsCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SportsNetworkId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChannelId");
-
-                    b.HasIndex("SportsCategoryId");
-
-                    b.HasIndex("SportsNetworkId");
-
-                    b.ToTable("SportsSchedules");
-                });
-
             modelBuilder.Entity("AfnGuideAPI.Models.TimeZone", b =>
                 {
                     b.Property<int>("Id")
@@ -397,29 +303,6 @@ namespace AfnGuideAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Channel");
-                });
-
-            modelBuilder.Entity("AfnGuideAPI.Models.SportsSchedule", b =>
-                {
-                    b.HasOne("AfnGuideAPI.Models.Channel", "Channel")
-                        .WithMany()
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AfnGuideAPI.Models.SportsCategory", "SportsCategory")
-                        .WithMany()
-                        .HasForeignKey("SportsCategoryId");
-
-                    b.HasOne("AfnGuideAPI.Models.SportsNetwork", "SportsNetwork")
-                        .WithMany()
-                        .HasForeignKey("SportsNetworkId");
-
-                    b.Navigation("Channel");
-
-                    b.Navigation("SportsCategory");
-
-                    b.Navigation("SportsNetwork");
                 });
 
             modelBuilder.Entity("AfnGuideAPI.Models.Channel", b =>

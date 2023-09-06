@@ -15,11 +15,13 @@ namespace AfnGuideAPI.Models
         public string? Color { get; set; }
         public string? Image { get; set; }
         public bool IsSplit { get; set; }
+        public bool IsSports { get; set; }
         public DateTime CreatedOnUTC { get; set; }
         public DateTime? ModifiedOnUTC { get; set; }
 
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
         public ICollection<ChannelTimeZone> ChannelTimeZones { get; set; } = new List<ChannelTimeZone>();
+        public ICollection<SportsSchedule> SportsSchedules { get; set; } = new List<SportsSchedule>();
     }
 
     [Table("ChannelTimeZones")]

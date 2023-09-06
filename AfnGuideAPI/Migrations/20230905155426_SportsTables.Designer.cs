@@ -4,6 +4,7 @@ using AfnGuideAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AfnGuideAPI.Migrations
 {
     [DbContext(typeof(AfnGuideDbContext))]
-    partial class AfnGuideDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230905155426_SportsTables")]
+    partial class SportsTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,17 +289,14 @@ namespace AfnGuideAPI.Migrations
                     b.Property<int>("ChannelId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedOnUTC")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsLive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsTapeDelayed")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("ModifiedOnUTC")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("SportId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SportName")
                         .HasColumnType("nvarchar(max)");

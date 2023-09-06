@@ -122,9 +122,9 @@ namespace AfnGuideAPI.HostedServices
         {
             try
             {
-                // Delete schedules where air date is older than 30 days
+                // Delete schedules where air date is older than 1 days
                 _dbContext.Schedules.RemoveRange(_dbContext.Schedules.Where(s 
-                    => s.AirDateUTC < DateTime.UtcNow.AddDays(-30)));
+                    => s.AirDateUTC < DateTime.UtcNow.AddDays(-1)));
 
                 // Save changes to database
                 await _dbContext.SaveChangesAsync();

@@ -170,14 +170,15 @@ namespace AfnGuideAPI.HostedServices
                     existingPromo.Duration = promo.Duration;
                     existingPromo.Image = promo.Image;
                     existingPromo.Url = promo.Url;
-                    existingPromo.CreatedOnUTC = promo.CreatedOnUTC;
                     existingPromo.IsPromoB = promo.IsPromoB;
-                    existingPromo.IsActive = promo.IsActive;
+                    existingPromo.IsActive = true;
                     existingPromo.ImageData = promo.ImageData;
+                    existingPromo.ModifiedOnUTC = DateTime.UtcNow;
                 }
                 else
                 {
                     // Otherwise, add it
+                    promo.IsActive = true;
                     await _dbContext.Promos.AddAsync(promo);
                 }
                 // Save changes to database
