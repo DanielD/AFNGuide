@@ -1,0 +1,21 @@
+.promoB {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  background-image: none;
+  max-width:360px;
+  max-height:327px;
+}
+
+.promoB .promoBSingle .promoBContainer,
+.promoB .promoBDualRows .promoBContainer {
+  width: 100%;
+}
+
+.promoB .promoBSingle .promoBContainer {
+  max-height: 327px;
+}
+
+.promoB .promoBDualRows .promoBContainer {
+  max-height: 160px;
+}

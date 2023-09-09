@@ -1,0 +1,22 @@
+.timezone-selector .dropdown-menu.show .container {
+  padding-top: calc(1.5rem * 0.5);
+  padding-bottom: calc(1.5rem * 0.5);
+}
+
+.timezone-selector .dropdown-menu.show .container div > div > div > div > div > div:first-child {
+  color: #fff;
+}
+
+@media (min-width: 933px) {
+  .timezone-selector .dropdown-menu.show {
+    left: -37.3rem !important;
+    width: 40rem;
+  }
+}
+
+@media (min-width: 576px) {
+  .timezone-selector .dropdown-menu.show {
+    left: -27.3rem !important;
+    width: 30rem;
+  }
+}

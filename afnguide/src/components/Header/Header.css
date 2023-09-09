@@ -1,0 +1,49 @@
+.afn-header {
+  background-image: linear-gradient(#66666E, #141417)
+}
+
+.afn-header .dropdown-toggle::after {
+  display: none;
+}
+
+.afn-header .nav-link {
+  color: #fff;
+  white-space: nowrap;
+}
+
+.afn-header .menu-form-control {
+  border-bottom: 7px solid transparent;
+  border-top: 7px solid transparent;
+}
+
+.afn-header .menu-form-control.text-box.input-group {
+  flex-wrap: nowrap;
+}
+
+.afn-header .menu-form-control.text-box.input-group > button {
+  padding-top: 3px;
+}
+
+.afn-header .menu-form-control.text-box > input {
+  min-width: 30px;
+  color: #fff;
+}
+
+.afn-header .menu-form-control.dropdown > button > svg {
+  margin-top: -3px;
+}
+
+@media (min-width: 933px) {
+  .afn-header .menu-form-control.text-box > input {
+    width: 300px
+  }
+}
+
+@media (min-width: 576px) {
+  .afn-header .menu-form-control {
+    border-bottom: 0;
+    border-top: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+  }
+}
